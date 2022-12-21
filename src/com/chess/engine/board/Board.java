@@ -154,6 +154,7 @@ public class Board {
         Map<Integer, Piece> boardConfig;
         Alliance nextMoveMaker;
         Pawn enPassantPawn;
+        Move transitionMove;
 
         public Builder(){
 
@@ -175,6 +176,10 @@ public class Board {
 
         public void setEnPassantPawn(Pawn enPassantPawn) {
             this.enPassantPawn = enPassantPawn;
+        }
+        public Builder setMoveTransition(final Move transitionMove) {
+            this.transitionMove = transitionMove;
+            return this;
         }
     }
 }
