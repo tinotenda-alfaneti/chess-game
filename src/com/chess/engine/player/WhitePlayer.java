@@ -37,7 +37,7 @@ public class WhitePlayer extends Player{
     }
 
     @Override
-    protected Collection<Move> calculateKingCastles(final Collection<Move> playerLegals,
+    public Collection<Move> calculateKingCastles(final Collection<Move> playerLegals,
                                                     final Collection<Move> opponentLegals) {
         final List<Move> kingCastles = new ArrayList<>();
 
@@ -70,5 +70,10 @@ public class WhitePlayer extends Player{
         }
 
         return ImmutableList.copyOf(kingCastles);
+    }
+
+    @Override
+    public String toString() {
+        return "White";
     }
 }

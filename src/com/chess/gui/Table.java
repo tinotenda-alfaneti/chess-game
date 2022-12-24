@@ -6,6 +6,7 @@ import com.chess.engine.board.Tile;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.board.Move;
 import com.chess.engine.player.MoveTransition;
+import com.chess.engine.player.Player;
 import com.google.common.collect.Lists;
 
 import javax.imageio.ImageIO;
@@ -237,20 +238,16 @@ public class Table {
                             if (transition.getMoveStatus().isDone()) {
                                 chessBoard = transition.getTransitionBoard();
                                 moveLog.addMove(move);
-                                //add move to the move log
                             }
                             sourceTile = null;
                             destinationTile = null;
                             humanMovedPiece = null;
 
                         }
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                gameHistoryPanel.redo(chessBoard, moveLog);
-                                takenPiecesPanel.redo(moveLog);
-                                boardPanel.drawBoard(chessBoard);
-                            }
+                        SwingUtilities.invokeLater(() -> {
+                            gameHistoryPanel.redo(chessBoard, moveLog);
+                            takenPiecesPanel.redo(moveLog);
+                            boardPanel.drawBoard(chessBoard);
                         });
 
                     }

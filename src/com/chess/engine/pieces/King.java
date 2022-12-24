@@ -19,7 +19,7 @@ public class King extends Piece{
         super(PieceType.KING, piecePosition, pieceAlliance, true);
     }
     public King(final int piecePosition, final Alliance pieceAlliance, final boolean isFirstMove) {
-        super(PieceType.ROOK, piecePosition, pieceAlliance, isFirstMove);
+        super(PieceType.KING, piecePosition, pieceAlliance, isFirstMove);
     }
 
 

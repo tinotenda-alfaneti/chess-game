@@ -19,7 +19,6 @@ public abstract class Piece {
         this.pieceType = pieceType;
         this.piecePosition = piecePosition;
         this.pieceAlliance = pieceAlliance;
-        //TODO somework on this
         this.isFirstMove = isFirstMove;
         this.cachedHashCode = computeHashCode();
     }
