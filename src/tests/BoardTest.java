@@ -1,4 +1,4 @@
-package src.tests;
+package tests;
 
 import org.junit.jupiter.api.Test;
 
