@@ -38,11 +38,11 @@ class BoardTest {
 
         final Builder builder = new Builder();
         // Black Layout
-        builder.setPiece(new King(4, Alliance.BLACK, false));
+        builder.setPiece(new King(4, Alliance.BLACK, false, false, true, true));
         builder.setPiece(new Pawn(12, Alliance.BLACK));
         // White Layout
         builder.setPiece(new Pawn(52, Alliance.WHITE));
-        builder.setPiece(new King(60, Alliance.WHITE, false));
+        builder.setPiece(new King(60, Alliance.WHITE, false, false, true, true));
         builder.setMoveMaker(Alliance.WHITE);
         // Set the current player
         final Board board = builder.build();
