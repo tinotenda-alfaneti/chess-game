@@ -6,7 +6,6 @@ import com.chess.engine.board.Tile;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.board.Move;
 import com.chess.engine.player.MoveTransition;
-import com.chess.engine.player.Player;
 import com.chess.engine.player.ai.MiniMax;
 import com.chess.engine.player.ai.MoveStrategy;
 import com.google.common.collect.Lists;
@@ -49,7 +48,7 @@ public class Table extends Observable {
 
     private final Color lightTileColor = Color.decode("#FFFACD");
     private final Color darkTileColor = Color.decode("#593E1A");
-    private static String defaultPieceImagesPath = "art/plain/";
+    private static final String defaultPieceImagesPath = "art/plain/";
     private boolean highlightLegalMoves;
 
     private static final Table INSTANCE = new Table();
@@ -101,14 +100,6 @@ public class Table extends Observable {
 
     private JMenu createFileMenu() {
         final JMenu fileMenu = new JMenu("File");
-        final JMenuItem openPGN = new JMenuItem("Load PGN File");
-        openPGN.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Open up the pgn file");
-            }
-        });
-        fileMenu.add(openPGN);
 
         final JMenuItem exitMenuItem = new JMenuItem("Exit");
         exitMenuItem.addActionListener(new ActionListener() {
@@ -207,9 +198,8 @@ public class Table extends Observable {
 
         @Override
         protected Move doInBackground() throws Exception {
-            final MoveStrategy miniMax = new MiniMax(4);
-            final Move bestMove = miniMax.execute(Table.get().getGameBoard());
-            return bestMove;
+            final MoveStrategy miniMax = new MiniMax(Table.get().getGameSetup().getSearchDepth());
+            return miniMax.execute(Table.get().getGameBoard());
         }
 
         @Override
@@ -225,9 +215,7 @@ public class Table extends Observable {
                 Table.get().getBoardPanel().drawBoard(Table.get().getGameBoard());
                 Table.get().moveMadeUpdate(PlayerType.COMPUTER);
 
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
 
@@ -305,7 +293,6 @@ public class Table extends Observable {
                 this.boardTiles.add(tilePanel);
                 add(tilePanel);
             }
-            ;
             setPreferredSize(BOARD_PANEL_DIMENSION);
             validate();
         }
@@ -442,7 +429,8 @@ public class Table extends Observable {
             if (board.getTile(this.tileId).isTileOccupied()) {
                 try {
                     final BufferedImage image =
-                            ImageIO.read(new File(defaultPieceImagesPath + board.getTile(this.tileId).getPiece().getPieceAlliance().toString().substring(0, 1) +
+                            ImageIO.read(new File(defaultPieceImagesPath + board.getTile(this.tileId).
+                                    getPiece().getPieceAlliance().toString().charAt(0) +
                                     board.getTile(this.tileId).getPiece().toString() + ".gif"));
                     add(new JLabel(new ImageIcon(image)));
                 } catch (IOException e) {

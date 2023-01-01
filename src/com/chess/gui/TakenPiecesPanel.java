@@ -7,15 +7,12 @@ import com.google.common.primitives.Ints;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class TakenPiecesPanel extends JPanel {
@@ -60,13 +57,14 @@ public class TakenPiecesPanel extends JPanel {
             }
 
         }
-        Collections.sort(whiteTakenPieces, (o1, o2) -> Ints.compare(o1.getPieceValue(), o2.getPieceValue()));
-        Collections.sort(blackTakenPieces, (o1, o2) -> Ints.compare(o1.getPieceValue(), o2.getPieceValue()));
+        whiteTakenPieces.sort((o1, o2) -> Ints.compare(o1.getPieceValue(), o2.getPieceValue()));
+        blackTakenPieces.sort((o1, o2) -> Ints.compare(o1.getPieceValue(), o2.getPieceValue()));
 
         for (final Piece takenPiece : whiteTakenPieces) {
             try{
 
-                final BufferedImage image = ImageIO.read(new File("art/plain/" + takenPiece.getPieceAlliance().toString().substring(0,1) + "" + takenPiece.toString() + ".gif"));
+                final BufferedImage image = ImageIO.read(new File("art/plain/" +
+                        takenPiece.getPieceAlliance().toString().charAt(0) + "" + takenPiece + ".gif"));
                 final ImageIcon icon = new ImageIcon(image);
                 final JLabel imageLabel = new JLabel(new ImageIcon(icon.getImage().getScaledInstance(
                         icon.getIconWidth() - 15, icon.getIconWidth() - 15, Image.SCALE_SMOOTH)));
@@ -80,7 +78,7 @@ public class TakenPiecesPanel extends JPanel {
         for (final Piece takenPiece : blackTakenPieces) {
             try{
 
-                final BufferedImage image = ImageIO.read(new File("art/plain/" + takenPiece.getPieceAlliance().toString().substring(0,1) + "" + takenPiece.toString() + ".gif"));
+                final BufferedImage image = ImageIO.read(new File("art/plain/" + takenPiece.getPieceAlliance().toString().charAt(0) + "" + takenPiece + ".gif"));
                 final ImageIcon icon = new ImageIcon(image);
                 final JLabel imageLabel = new JLabel(new ImageIcon(icon.getImage().getScaledInstance(
                         icon.getIconWidth() - 15, icon.getIconWidth() - 15, Image.SCALE_SMOOTH)));
