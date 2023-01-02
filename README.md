@@ -47,6 +47,7 @@ Here are the main modules and tool I used for the project
 
 <!-- ROADMAP -->
 ## ROADMAP
+Feel free to contribute on any of the [TODOs](https://github.com/tinotenda-alfaneti/chess-game/blob/main/TODO.md) that are not yet accomplished.
 
 
 
