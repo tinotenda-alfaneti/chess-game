@@ -48,7 +48,7 @@ public class Table extends Observable {
 
     private final Color lightTileColor = Color.decode("#FFFACD");
     private final Color darkTileColor = Color.decode("#593E1A");
-    private static final String defaultPieceImagesPath = "art/plain/";
+    private static final String defaultPieceImagesPath = "art/holywarriors/";
     private boolean highlightLegalMoves;
 
     private static final Table INSTANCE = new Table();
@@ -59,7 +59,7 @@ public class Table extends Observable {
 
 
     private Table() {
-        this.gameFrame = new JFrame("JChess");
+        this.gameFrame = new JFrame("Atarist Chess");
         this.gameFrame.setLayout(new BorderLayout());
         final JMenuBar tableMenuBar = createTableMenuBar();
         this.gameFrame.setJMenuBar(tableMenuBar);
@@ -163,21 +163,22 @@ public class Table extends Observable {
             if (Table.get().getGameSetup().isAIPlayer(Table.get().getGameBoard().currentPlayer()) &&
                     !Table.get().getGameBoard().currentPlayer().isInCheckMate() &&
                     !Table.get().getGameBoard().currentPlayer().isInStaleMate()) {
-                //create AI thread
-                // create ai work
                 final AIThinkTank thinkTank = new AIThinkTank();
                 thinkTank.execute();
             }
 
             if (Table.get().getGameBoard().currentPlayer().isInCheckMate()) {
-
-                System.out.println("Game Over, " + Table.get().getGameBoard().currentPlayer() + " is in checkmate");
-
+                JOptionPane.showMessageDialog(Table.get().getBoardPanel(),
+                        "Game Over: Player " + Table.get().getGameBoard().currentPlayer() + " is in checkmate!", "Game Over",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
+
             if (Table.get().getGameBoard().currentPlayer().isInStaleMate()) {
-                System.out.println("Game Over, " + Table.get().getGameBoard().currentPlayer() + " is in checkmate");
-
+                JOptionPane.showMessageDialog(Table.get().getBoardPanel(),
+                        "Game Over: Player " + Table.get().getGameBoard().currentPlayer() + " is in stalemate!", "Game Over",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
+
 
         }
     }
