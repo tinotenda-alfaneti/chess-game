@@ -10,7 +10,7 @@
   <p align="center"> 
     <br />
     <br />
-    <a href="https://github.com/tinotenda-alfaneti/chess-game/blob/main/Screenshot%20(2).png">View Demo</a>
+    <a href="https://chessgame.atarnet.org">View Demo</a>
     ·
     <a href="https://github.com/tinotenda-alfaneti/chess-game/issues/new">Report Bug</a>
     ·

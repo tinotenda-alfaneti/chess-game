@@ -77,6 +77,15 @@ public class Table extends Observable {
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
         this.gameFrame.add(this.gameHistoryPanel, BorderLayout.EAST);
         this.gameFrame.setVisible(true);
+        
+        // Automatically show game setup dialog on startup
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                gameSetup.promptUser();
+                setupUpdate(gameSetup);
+            }
+        });
     }
 
     public static Table get() {

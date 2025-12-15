@@ -21,11 +21,24 @@ class GameSetup extends JDialog {
     GameSetup(final JFrame frame,
               final boolean modal) {
         super(frame, modal);
+        setTitle("Chess Game Setup");
         final JPanel myPanel = new JPanel(new GridLayout(0, 1));
+        myPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        // Increase font size for better visibility
+        Font labelFont = new Font("Arial", Font.BOLD, 16);
+        Font buttonFont = new Font("Arial", Font.PLAIN, 14);
+        
         final JRadioButton whiteHumanButton = new JRadioButton(HUMAN_TEXT);
         final JRadioButton whiteComputerButton = new JRadioButton(COMPUTER_TEXT);
         final JRadioButton blackHumanButton = new JRadioButton(HUMAN_TEXT);
         final JRadioButton blackComputerButton = new JRadioButton(COMPUTER_TEXT);
+        
+        whiteHumanButton.setFont(buttonFont);
+        whiteComputerButton.setFont(buttonFont);
+        blackHumanButton.setFont(buttonFont);
+        blackComputerButton.setFont(buttonFont);
+        
         whiteHumanButton.setActionCommand(HUMAN_TEXT);
         final ButtonGroup whiteGroup = new ButtonGroup();
         whiteGroup.add(whiteHumanButton);
@@ -38,18 +51,36 @@ class GameSetup extends JDialog {
         blackHumanButton.setSelected(true);
 
         getContentPane().add(myPanel);
-        myPanel.add(new JLabel("White"));
+        
+        JLabel whiteLabel = new JLabel("White Player:");
+        whiteLabel.setFont(labelFont);
+        myPanel.add(whiteLabel);
         myPanel.add(whiteHumanButton);
         myPanel.add(whiteComputerButton);
-        myPanel.add(new JLabel("Black"));
+        
+        myPanel.add(Box.createVerticalStrut(10));
+        
+        JLabel blackLabel = new JLabel("Black Player:");
+        blackLabel.setFont(labelFont);
+        myPanel.add(blackLabel);
         myPanel.add(blackHumanButton);
         myPanel.add(blackComputerButton);
 
-        myPanel.add(new JLabel("Search"));
+        myPanel.add(Box.createVerticalStrut(10));
+        
+        JLabel searchLabel = new JLabel("AI Difficulty (Search Depth):");
+        searchLabel.setFont(labelFont);
+        myPanel.add(searchLabel);
         this.searchDepthSpinner = addLabeledSpinner(myPanel, "Search Depth", new SpinnerNumberModel(6, 0, Integer.MAX_VALUE, 1));
+        this.searchDepthSpinner.setFont(buttonFont);
 
+        myPanel.add(Box.createVerticalStrut(10));
+        
         final JButton cancelButton = new JButton("Cancel");
         final JButton okButton = new JButton("OK");
+        
+        cancelButton.setFont(buttonFont);
+        okButton.setFont(buttonFont);
 
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

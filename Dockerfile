@@ -52,6 +52,30 @@ RUN apt-get update && apt-get install -y \
 # Copy application from builder
 COPY --from=builder /app /app
 
+# Create chess game launcher script
+RUN echo '#!/bin/bash\n\
+export DISPLAY=:99\n\
+cd /app\n\
+exec java -cp "chess-game.jar:lib/*" com.chess.jChess\n\
+' > /app/launch-chess.sh && chmod +x /app/launch-chess.sh
+
+# Create Fluxbox menu with chess game launcher
+RUN mkdir -p /root/.fluxbox && \
+    echo '[begin] (Menu)\n\
+  [exec] (Chess Game) {/app/launch-chess.sh}\n\
+  [exec] (Terminal) {xterm}\n\
+  [separator]\n\
+  [restart] (Restart Fluxbox)\n\
+[end]\n\
+' > /root/.fluxbox/menu
+
+# Create desktop shortcut
+RUN mkdir -p /root/Desktop && \
+    echo '#!/bin/bash\n\
+/app/launch-chess.sh &\n\
+' > /root/Desktop/chess-game.sh && \
+    chmod +x /root/Desktop/chess-game.sh
+
 # Create startup script
 RUN echo '#!/bin/bash\n\
 # Start virtual display\n\
@@ -70,11 +94,15 @@ sleep 1\n\
 websockify --web=/usr/share/novnc/ ${NOVNC_PORT} localhost:${VNC_PORT} &\n\
 sleep 2\n\
 \n\
-# Start chess game with proper display settings\n\
+# Auto-restart chess game if closed\n\
 export DISPLAY=:99\n\
-cd /app\n\
-java -cp "chess-game.jar:lib/*" com.chess.jChess &\n\
-JAVA_PID=$!\n\
+while true; do\n\
+  echo "Starting chess game..."\n\
+  cd /app\n\
+  java -cp "chess-game.jar:lib/*" com.chess.jChess\n\
+  echo "Chess game closed. Restarting in 3 seconds..."\n\
+  sleep 3\n\
+done &\n\
 \n\
 # Wait for the window to appear and maximize it\n\
 sleep 3\n\
@@ -90,7 +118,8 @@ fi\n\
 \n\
 # Keep container running and show logs\n\
 echo "Chess game started. Access via http://localhost:6080/vnc.html"\n\
-echo "Click Connect, then look for the Atarist Chess window"\n\
+echo "If you close the game, it will automatically restart in 3 seconds"\n\
+echo "You can also right-click on the desktop to access the Fluxbox menu and manually launch it"\n\
 tail -f /dev/null\n\
 ' > /start.sh && chmod +x /start.sh
 

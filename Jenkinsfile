@@ -5,7 +5,7 @@ pipeline {
     GITHUB_USER     = "tinotenda-alfaneti"
     REPO_NAME       = "chess-game"
     IMAGE_NAME      = "tinorodney/chess-game"
-    TAG             = "v1.0.0"
+    TAG             = "v1.0.1"
     APP_NAME        = "chess-game"
     NAMESPACE       = "chess-game-ns"
     SOURCE_NS       = "test-ns"
