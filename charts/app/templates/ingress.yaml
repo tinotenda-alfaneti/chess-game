@@ -8,6 +8,9 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
   annotations:
     kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /vnc.html
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      rewrite ^/$ /vnc.html permanent;
     {{- range $key, $value := .Values.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
