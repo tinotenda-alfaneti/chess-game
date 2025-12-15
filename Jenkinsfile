@@ -115,8 +115,34 @@ pipeline {
 
             $WORKSPACE/bin/kubectl delete job kaniko-job -n ${NAMESPACE} --ignore-not-found=true
             $WORKSPACE/bin/kubectl apply -f kaniko-job.yaml -n ${NAMESPACE}
-            $WORKSPACE/bin/kubectl wait --for=condition=complete job/kaniko-job -n ${NAMESPACE} --timeout=15m
-            echo "Kaniko build completed."
+            
+            # Wait with retry logic for network instability
+            echo "Waiting for Kaniko build to complete (with retry handling)..."
+            RETRY_COUNT=0
+            MAX_RETRIES=3
+            while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+              if $WORKSPACE/bin/kubectl wait --for=condition=complete job/kaniko-job -n ${NAMESPACE} --timeout=20m; then
+                echo "Kaniko build completed successfully."
+                break
+              else
+                RETRY_COUNT=$((RETRY_COUNT + 1))
+                if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+                  echo "kubectl wait failed (attempt $RETRY_COUNT/$MAX_RETRIES). Checking job status..."
+                  JOB_STATUS=$($WORKSPACE/bin/kubectl get job kaniko-job -n ${NAMESPACE} -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}' || echo "Unknown")
+                  if [ "$JOB_STATUS" = "True" ]; then
+                    echo "Job actually completed despite kubectl timeout. Continuing..."
+                    break
+                  fi
+                  echo "Retrying in 10 seconds..."
+                  sleep 10
+                else
+                  echo "Max retries reached. Checking final job status..."
+                  $WORKSPACE/bin/kubectl get job kaniko-job -n ${NAMESPACE}
+                  exit 1
+                fi
+              fi
+            done
+            
             $WORKSPACE/bin/kubectl logs job/kaniko-job -n ${NAMESPACE} || true
           '''
         }
@@ -180,7 +206,7 @@ pipeline {
   post {
     success {
       echo "✅ Pipeline completed successfully."
-      echo "🎮 Chess game should be accessible at: https://chess-game.atarnet.org"
+      echo "🎮 Chess game should be accessible at: https://chessgame.atarnet.org"
     }
     failure {
       echo "❌ Pipeline failed."

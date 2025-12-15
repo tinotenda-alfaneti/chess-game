@@ -1,9 +1,6 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/tinotenda-alfaneti/stock-prices-predictor/">
-    <img src="./gameImage.jpg" alt="Logo" width="100" height="80">
-  </a>
 
   <h1 align="center">ATARIST CHESS GAME</h1>
 

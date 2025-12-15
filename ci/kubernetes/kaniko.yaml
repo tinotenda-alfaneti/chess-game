@@ -14,8 +14,12 @@ spec:
             - "--dockerfile=Dockerfile"
             - "--context=__CONTEXT_URL__"            # e.g. https://github.com/<user>/<repo>.git#main
             - "--destination=__IMAGE_DEST__"         # e.g. tinorodney/chess-game:<tag>
+            - "--cache=true"
+            - "--cache-ttl=168h"
+            - "--compressed-caching=false"
             - "--verbosity=info"
             - "--cleanup"
+            - "--single-snapshot"
           volumeMounts:
             - name: docker-config
               mountPath: /kaniko/.docker/

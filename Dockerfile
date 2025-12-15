@@ -3,10 +3,12 @@
 FROM maven:3.9-eclipse-temurin-17 AS builder
 WORKDIR /build
 
-# Download Guava dependency
+# Download Guava dependency with retry logic
 RUN mkdir -p lib && \
+    (curl -L -o lib/guava-31.1-jre.jar \
+    https://repo1.maven.org/maven2/com/google/guava/guava/31.1-jre/guava-31.1-jre.jar || \
     curl -L -o lib/guava-31.1-jre.jar \
-    https://repo1.maven.org/maven2/com/google/guava/guava/31.1-jre/guava-31.1-jre.jar
+    https://repo.maven.apache.org/maven2/com/google/guava/guava/31.1-jre/guava-31.1-jre.jar)
 
 # Copy source code (exclude tests)
 COPY src /build/src
@@ -34,8 +36,9 @@ ENV DEBIAN_FRONTEND=noninteractive \
     NOVNC_PORT=6080 \
     VNC_RESOLUTION=1280x720
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
+# Install dependencies with optimizations
+RUN echo 'Acquire::ForceIPv4 "true";' > /etc/apt/apt.conf.d/99force-ipv4 && \
+    apt-get update && apt-get install -y --no-install-recommends \
     openjdk-17-jre \
     x11vnc \
     xvfb \
@@ -45,9 +48,9 @@ RUN apt-get update && apt-get install -y \
     novnc \
     websockify \
     supervisor \
-    xdotool \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    xdotool && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Copy application from builder
 COPY --from=builder /app /app
