@@ -41,8 +41,93 @@ Here are the main modules and tool I used for the project
 * [JUnit5 Jupiter](https://junit.org/junit5/docs/current/user-guide/) - JUnit Jupiter is the combination of the programming model and extension model for writing tests and extensions in JUnit 5. The JUnit Platform serves as a foundation for launching testing frameworks on the JVM
 * [Java Swing](https://en.wikipedia.org/wiki/Swing_(Java)) - The Swing framework in Java is built on top of the AWT framework and can be used to create GUI applications just like AWT.
 * [IntelliJ](https://www.jetbrains.com/idea/) - IntelliJ IDEA is undoubtedly the top-choice IDE for software developers. It makes Java and Kotlin development a more productive and enjoyable experience
+* [noVNC](https://novnc.com/) - Browser-based VNC client for web-based access to the chess game
 
 
+## GETTING STARTED
+
+### Prerequisites
+- [Docker](https://www.docker.com/get-started) installed on your machine
+- Modern web browser (Chrome, Firefox, Safari, Edge)
+
+### Running Locally with Docker
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/tinotenda-alfaneti/chess-game.git
+   cd chess-game
+   ```
+
+2. **Build the Docker image**
+   ```bash
+   docker build -t chess-game:latest .
+   ```
+   Or using make:
+   ```bash
+   make build
+   ```
+
+3. **Run the container**
+   ```bash
+   docker run -d -p 6080:6080 -p 5900:5900 --name chess-game chess-game:latest
+   ```
+   Or using make:
+   ```bash
+   make run
+   ```
+
+4. **Access the game**
+   - Open your browser and navigate to: **http://localhost:6080/vnc.html**
+   - Click the **Connect** button
+   - The chess game window will appear - start playing!
+
+5. **Stop the game**
+   ```bash
+   docker stop chess-game
+   docker rm chess-game
+   ```
+
+### Running with Make Commands
+
+```bash
+# Build the image
+make build
+
+# Run locally
+make run
+
+# Build and push to Docker Hub
+make push
+
+# Deploy to Kubernetes
+make deploy
+
+# Run local test
+make test-local
+```
+
+### Traditional Desktop Mode (Requires Java)
+
+If you prefer to run the chess game as a traditional desktop application:
+
+1. **Prerequisites**
+   - Java 17 or higher installed
+   - Download Guava library
+
+2. **Compile and run**
+   ```bash
+   # Compile
+   javac -cp "lib/guava-31.1-jre.jar" -d out $(find src/com -name "*.java")
+   
+   # Run
+   java -cp "out:lib/guava-31.1-jre.jar" com.chess.jChess
+   ```
+
+### Deployment to Kubernetes
+
+For production deployment to Kubernetes, see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
+
+For details on how noVNC works with this application, see [docs/NOVNC_GUIDE.md](docs/NOVNC_GUIDE.md)
 
 
 <!-- ROADMAP -->

@@ -1,0 +1,32 @@
+replicaCount: 1
+
+image:
+  repository: ""   # e.g. tinorodney/chess-game
+  tag: ""          # e.g. v1.0.0
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+  vncPort: 6080
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+  host: chessgame.atarnet.org
+  tls:
+    enabled: true
+    secretName: tls-atarnet
