@@ -22,6 +22,8 @@ public class Board {
     private final Player currentPlayer;
 
     private final Pawn enPassantPawn;
+    
+    private final Map<String, Integer> positionHistory;
 
     public Board(final Builder builder) {
         this.gameBoard = createGameBoard(builder);
@@ -36,6 +38,16 @@ public class Board {
         this.blackPlayer = new BlackPlayer(this, whiteStandardLegalMoves, blackStandardLegalMoves);
         this.whitePlayer = new WhitePlayer(this, whiteStandardLegalMoves, blackStandardLegalMoves);
         this.currentPlayer = builder.nextMoveMaker.choosePlayer(this.whitePlayer, this.blackPlayer);
+        
+        // Initialize position history from builder or create new map
+        if (builder.positionHistory != null) {
+            this.positionHistory = new HashMap<>(builder.positionHistory);
+        } else {
+            this.positionHistory = new HashMap<>();
+        }
+        // Record current position
+        final String currentPositionKey = generatePositionKey();
+        this.positionHistory.put(currentPositionKey, this.positionHistory.getOrDefault(currentPositionKey, 0) + 1);
     }
 
     @Override
@@ -156,6 +168,63 @@ public class Board {
     public Pawn getEnPassantPawn() {
         return this.enPassantPawn;
     }
+    
+    /**
+     * Generates a unique key representing the current board position.
+     * The key includes piece positions and types, and the current player to move.
+     * This is used for detecting threefold repetition.
+     */
+    private String generatePositionKey() {
+        final StringBuilder keyBuilder = new StringBuilder();
+        
+        // Add all pieces to the key
+        for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
+            final Tile tile = this.gameBoard.get(i);
+            if (tile.isTileOccupied()) {
+                final Piece piece = tile.getPiece();
+                keyBuilder.append(i)
+                          .append(":")
+                          .append(piece.getPieceAlliance())
+                          .append(piece.getPieceType())
+                          .append(";");
+            }
+        }
+        
+        // Add current player to move (important for threefold repetition)
+        keyBuilder.append("|").append(this.currentPlayer.getAlliance());
+        
+        // Add castling rights (important for position uniqueness)
+        keyBuilder.append("|")
+                  .append(this.whitePlayer.isKingSideCastleCapable()).append(",")
+                  .append(this.whitePlayer.isQueenSideCastleCapable()).append(",")
+                  .append(this.blackPlayer.isKingSideCastleCapable()).append(",")
+                  .append(this.blackPlayer.isQueenSideCastleCapable());
+        
+        // Add en passant pawn position if exists
+        if (this.enPassantPawn != null) {
+            keyBuilder.append("|EP:").append(this.enPassantPawn.getPiecePosition());
+        }
+        
+        return keyBuilder.toString();
+    }
+    
+    /**
+     * Checks if the current position has occurred three times in the game.
+     * @return true if threefold repetition has occurred, false otherwise
+     */
+    public boolean isThreefoldRepetition() {
+        final String currentPositionKey = generatePositionKey();
+        final Integer occurrences = this.positionHistory.get(currentPositionKey);
+        return occurrences != null && occurrences >= 3;
+    }
+    
+    /**
+     * Gets the position history map for propagation to new boards.
+     * @return the position history map
+     */
+    public Map<String, Integer> getPositionHistory() {
+        return this.positionHistory;
+    }
 
     public static class Builder {
 
@@ -163,6 +232,7 @@ public class Board {
         Alliance nextMoveMaker;
         Pawn enPassantPawn;
         Move transitionMove;
+        Map<String, Integer> positionHistory;
 
         public Builder(){
 
@@ -187,6 +257,11 @@ public class Board {
         }
         public Builder setMoveTransition(final Move transitionMove) {
             this.transitionMove = transitionMove;
+            return this;
+        }
+        
+        public Builder setPositionHistory(final Map<String, Integer> positionHistory) {
+            this.positionHistory = positionHistory;
             return this;
         }
     }

@@ -86,6 +86,7 @@ public abstract class Move {
         builder.setPiece(this.movedPiece.movePiece(this));
         builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
         builder.setMoveTransition(this);
+        builder.setPositionHistory(this.board.getPositionHistory());
         return builder.build();
     }
 
@@ -198,6 +199,7 @@ public abstract class Move {
             }
             builder.setPiece(this.promotedPawn.getPromotionPiece().movePiece(this));
             builder.setMoveMaker(pawnMoveBoard.currentPlayer().getAlliance());
+            builder.setPositionHistory(pawnMoveBoard.getPositionHistory());
             return builder.build();
 
         }
@@ -287,6 +289,7 @@ public abstract class Move {
             }
             builder.setPiece(this.movedPiece.movePiece(this));
             builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
+            builder.setPositionHistory(this.board.getPositionHistory());
             return builder.build();
         }
     }
@@ -312,6 +315,7 @@ public abstract class Move {
             builder.setPiece(movedPawn);
             builder.setEnPassantPawn(movedPawn);
             builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
+            builder.setPositionHistory(this.board.getPositionHistory());
             return builder.build();
         }
         @Override
@@ -357,6 +361,7 @@ public abstract class Move {
             builder.setPiece(this.movedPiece.movePiece(this));
             builder.setPiece(new Rook(this.castleRookDestination, this.castleRook.getPieceAlliance()));
             builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
+            builder.setPositionHistory(this.board.getPositionHistory());
 
             return builder.build();
         }
