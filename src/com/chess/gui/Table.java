@@ -171,7 +171,8 @@ public class Table extends Observable {
 
             if (Table.get().getGameSetup().isAIPlayer(Table.get().getGameBoard().currentPlayer()) &&
                     !Table.get().getGameBoard().currentPlayer().isInCheckMate() &&
-                    !Table.get().getGameBoard().currentPlayer().isInStaleMate()) {
+                    !Table.get().getGameBoard().currentPlayer().isInStaleMate() &&
+                    !Table.get().getGameBoard().isThreefoldRepetition()) {
                 final AIThinkTank thinkTank = new AIThinkTank();
                 thinkTank.execute();
             }
@@ -185,6 +186,12 @@ public class Table extends Observable {
             if (Table.get().getGameBoard().currentPlayer().isInStaleMate()) {
                 JOptionPane.showMessageDialog(Table.get().getBoardPanel(),
                         "Game Over: Player " + Table.get().getGameBoard().currentPlayer() + " is in stalemate!", "Game Over",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+            
+            if (Table.get().getGameBoard().isThreefoldRepetition()) {
+                JOptionPane.showMessageDialog(Table.get().getBoardPanel(),
+                        "Game Over: Draw by threefold repetition!", "Game Over",
                         JOptionPane.INFORMATION_MESSAGE);
             }
 
